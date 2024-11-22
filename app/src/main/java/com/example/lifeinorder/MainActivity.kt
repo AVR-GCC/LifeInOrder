@@ -325,7 +325,7 @@ fun CustomSingleLineTextField(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(36.dp)
                 .background(Color(0xFF333333), RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
         ) {
