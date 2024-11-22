@@ -44,7 +44,6 @@ enum class HabitState {
 fun LifeInOrderApp() {
     val backgroundColor = Color.Black
     val primaryColor = Color(0xFF00B8D4)  // Less saturated cyan
-    val textColor = Color.White
 
     var selectedDate by remember { mutableStateOf(Date()) }
     var summary by remember { mutableStateOf("") }
