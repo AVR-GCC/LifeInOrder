@@ -3,43 +3,49 @@ package com.example.lifeinorder
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LifeInOrderApp()
-                }
-            }
+            LifeInOrderApp()
         }
     }
+}
+
+enum class HabitState {
+    Unfilled, Fail, Neutral, Success
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LifeInOrderApp() {
+    val backgroundColor = Color.Black
+    val primaryColor = Color(0xFF00B8D4)  // Less saturated cyan
+    val textColor = Color.White
+
     var selectedDate by remember { mutableStateOf(Date()) }
     var summary by remember { mutableStateOf("") }
     var food by remember { mutableStateOf("") }
@@ -57,91 +63,100 @@ fun LifeInOrderApp() {
         "Screen Break",
         "Nose Picking"
     )
-    val habitStatus = remember { mutableStateMapOf<String, HabitStatus>() }
+    val habitStatus = remember { mutableStateMapOf<String, HabitState>() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("LifeInOrder") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        }
-    ) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+    ) {
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // App Title
+            Text(
+                text = "LifeInOrder",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = primaryColor,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
             // Date Selector
-            DateSelector(selectedDate) { selectedDate = it }
+            CustomDateSelector(selectedDate, onDateSelected = { selectedDate = it })
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Habits
-            Text("Habits", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            HabitTracker(habits, habitStatus)
+            // Habit Tracker (horizontal)
+            CustomHabitTracker(habits, habitStatus)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Text Summary
-            OutlinedTextField(
+            CustomTextField(
                 value = summary,
                 onValueChange = { summary = it },
-                label = { Text("Summary") },
+                label = "Daily Summary",
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Meal Tracker
-            OutlinedTextField(
+            // Food Input
+            CustomTextField(
                 value = food,
                 onValueChange = { food = it },
-                label = { Text("Food") },
+                label = "Food",
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Location Selector
-            OutlinedTextField(
+            CustomTextField(
                 value = location,
                 onValueChange = { location = it },
-                label = { Text("Location") },
+                label = "Location",
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Save Button
-            Button(
+            CustomButton(
                 onClick = { /* TODO: Implement save functionality */ },
+                text = "Save",
                 modifier = Modifier.align(Alignment.End)
-            ) {
-                Text("Save")
-            }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateSelector(selectedDate: Date, onDateSelected: (Date) -> Unit) {
-    var showDatePicker by remember { mutableStateOf(false) }
+fun CustomDateSelector(selectedDate: Date, onDateSelected: (Date) -> Unit) {
     val dateFormatter = remember { SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFF00B8D4).copy(alpha = 0.1f))
+            .clickable { showDatePicker = true }
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+    ) {
         Text(
             text = dateFormatter.format(selectedDate),
-            style = MaterialTheme.typography.titleLarge
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF00B8D4),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
-        IconButton(onClick = { showDatePicker = true }) {
-            Icon(Icons.Default.DateRange, contentDescription = "Select Date")
-        }
     }
 
     if (showDatePicker) {
@@ -155,89 +170,184 @@ fun DateSelector(selectedDate: Date, onDateSelected: (Date) -> Unit) {
                         onDateSelected(Date(it))
                     }
                 }) {
-                    Text("OK")
+                    Text("OK", color = Color(0xFF00B8D4))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text("Cancel", color = Color(0xFF00B8D4))
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = Color.Black,
+                    titleContentColor = Color(0xFF00B8D4),
+                    headlineContentColor = Color(0xFF00B8D4),
+                    weekdayContentColor = Color(0xFF00B8D4),
+                    subheadContentColor = Color(0xFF00B8D4),
+                    yearContentColor = Color(0xFF00B8D4),
+                    currentYearContentColor = Color(0xFF00B8D4),
+                    selectedYearContainerColor = Color(0xFF00B8D4),
+                    selectedYearContentColor = Color.Black,
+                    dayContentColor = Color(0xFF00B8D4),
+                    selectedDayContainerColor = Color(0xFF00B8D4),
+                    selectedDayContentColor = Color.Black,
+                    todayContentColor = Color(0xFF00B8D4),
+                    todayDateBorderColor = Color(0xFF00B8D4)
+                )
+            )
         }
     }
 }
 
-enum class HabitStatus { Successful, PartiallySuccessful, Unsuccessful }
-
 @Composable
-fun HabitTracker(habits: List<String>, habitStatus: MutableMap<String, HabitStatus>) {
-    Column {
-        habits.forEach { habit ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+fun CustomHabitTracker(habits: List<String>, habitStatus: MutableMap<String, HabitState>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+        ) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                Text(habit, modifier = Modifier.weight(1f))
-                HabitStatusButtons(
-                    currentStatus = habitStatus[habit] ?: HabitStatus.Unsuccessful,
-                    onStatusChanged = { status -> habitStatus[habit] = status }
-                )
+                items(habits) { habit ->
+                    HabitItem(
+                        habit = habit,
+                        state = habitStatus[habit] ?: HabitState.Unfilled,
+                        onStateChange = { habitStatus[habit] = it }
+                    )
+                    if (habit != habits.last()) {
+                        Divider(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            modifier = Modifier
+                                .width(1.dp)
+                                .height(60.dp)
+                        )
+                    }
+                }
             }
         }
+        Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
     }
 }
 
 @Composable
-fun HabitStatusButtons(currentStatus: HabitStatus, onStatusChanged: (HabitStatus) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        HabitStatusButton(
-            status = HabitStatus.Successful,
-            color = Color.Green,//MaterialTheme.colorScheme.tertiary,
-            isSelected = currentStatus == HabitStatus.Successful,
-            onClick = { onStatusChanged(HabitStatus.Successful) }
-        )
-        HabitStatusButton(
-            status = HabitStatus.PartiallySuccessful,
-            color = Color.Yellow,//MaterialTheme.colorScheme.secondary,
-            isSelected = currentStatus == HabitStatus.PartiallySuccessful,
-            onClick = { onStatusChanged(HabitStatus.PartiallySuccessful) }
-        )
-        HabitStatusButton(
-            status = HabitStatus.Unsuccessful,
-            color = Color.Red,//MaterialTheme.colorScheme.error,
-            isSelected = currentStatus == HabitStatus.Unsuccessful,
-            onClick = { onStatusChanged(HabitStatus.Unsuccessful) }
-        )
-    }
-}
-
-@Composable
-fun HabitStatusButton(
-    status: HabitStatus,
-    color: Color,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) color else color.copy(alpha = 0.3f)
-        ),
-        modifier = Modifier.size(25.dp),
-        contentPadding = PaddingValues(5.dp)
+fun HabitItem(habit: String, state: HabitState, onStateChange: (HabitState) -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(80.dp)
+            .padding(vertical = 4.dp)
     ) {
-        Icon(
-            imageVector = when (status) {
-                HabitStatus.Successful -> Icons.Default.Check
-                HabitStatus.PartiallySuccessful -> Icons.Default.Star
-                HabitStatus.Unsuccessful -> Icons.Default.Close
-            },
-            contentDescription = status.name,
-            tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+        Text(
+            text = habit,
+            fontSize = 12.sp,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        CustomToggleButton(
+            state = state,
+            onStateChange = onStateChange
+        )
+    }
+}
+
+@Composable
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            color = Color(0xFF00B8D4),
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF333333), RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            androidx.compose.foundation.text.BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomToggleButton(
+    state: HabitState,
+    onStateChange: (HabitState) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val color = when (state) {
+        HabitState.Unfilled -> Color.Gray
+        HabitState.Fail -> Color.Red
+        HabitState.Neutral -> Color.Yellow
+        HabitState.Success -> Color.Green
+    }
+
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(6.dp))
+            .padding(2.dp)
+            .background(color, RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(4.dp))
+            .clickable {
+                val nextState = when (state) {
+                    HabitState.Unfilled -> HabitState.Fail
+                    HabitState.Fail -> HabitState.Neutral
+                    HabitState.Neutral -> HabitState.Success
+                    HabitState.Success -> HabitState.Unfilled
+                }
+                onStateChange(nextState)
+            }
+    )
+}
+
+@Composable
+fun CustomButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFF00B8D4))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = text,
+            color = Color.Black,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
         )
     }
 }
