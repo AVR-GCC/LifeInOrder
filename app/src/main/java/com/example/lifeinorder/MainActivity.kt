@@ -7,9 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +23,8 @@ import java.util.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.text.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +73,6 @@ fun LifeInOrderApp() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState())
         ) {
             // App Title
             Text(
@@ -94,31 +93,33 @@ fun LifeInOrderApp() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Text Summary
-            CustomTextField(
-                value = summary,
-                onValueChange = { summary = it },
-                label = "Daily Summary",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Food Input
-            CustomTextField(
-                value = food,
-                onValueChange = { food = it },
-                label = "Food",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             // Location Selector
-            CustomTextField(
+            CustomSingleLineTextField(
                 value = location,
                 onValueChange = { location = it },
                 label = "Location",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Text Summary (larger, flexible)
+            CustomTextField(
+                value = summary,
+                onValueChange = { summary = it },
+                label = "Summary",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Food Input (single line)
+            CustomSingleLineTextField(
+                value = food,
+                onValueChange = { food = it },
+                label = "Food",
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -269,7 +270,7 @@ fun CustomTextField(
     label: String,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
+    Column(modifier = modifier) {
         Text(
             text = label,
             fontSize = 14.sp,
@@ -279,16 +280,54 @@ fun CustomTextField(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, fill = false)
                 .background(Color(0xFF333333), RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
         ) {
-            androidx.compose.foundation.text.BasicTextField(
+            BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(16.dp),
-                textStyle = androidx.compose.ui.text.TextStyle(
+                textStyle = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomSingleLineTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            color = Color(0xFF00B8D4),
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(Color(0xFF333333), RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                textStyle = TextStyle(
                     fontSize = 16.sp,
                     color = Color.White
                 )
