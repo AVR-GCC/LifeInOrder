@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +46,12 @@ enum class HabitState {
 fun LifeInOrderApp() {
     val backgroundColor = Color.Black
     val primaryColor = Color(0xFF00B8D4)  // Less saturated cyan
+    val cursorColor = Color(0xFF00E5FF)  // Bright cyan for cursor
 
     var selectedDate by remember { mutableStateOf(Date()) }
-    var summary by remember { mutableStateOf("") }
-    var food by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+    var summary by remember { mutableStateOf(TextFieldValue("")) }
+    var food by remember { mutableStateOf(TextFieldValue("")) }
+    var location by remember { mutableStateOf(TextFieldValue("")) }
     val habits = listOf(
         "Alcohol",
         "Tobacco",
@@ -98,6 +101,7 @@ fun LifeInOrderApp() {
                 value = location,
                 onValueChange = { location = it },
                 label = "Location",
+                cursorColor = cursorColor,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -108,6 +112,7 @@ fun LifeInOrderApp() {
                 value = summary,
                 onValueChange = { summary = it },
                 label = "Summary",
+                cursorColor = cursorColor,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f, fill = false)
@@ -120,6 +125,7 @@ fun LifeInOrderApp() {
                 value = food,
                 onValueChange = { food = it },
                 label = "Food",
+                cursorColor = cursorColor,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -208,7 +214,7 @@ fun CustomHabitTracker(habits: List<String>, habitStatus: MutableMap<String, Hab
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -226,7 +232,7 @@ fun CustomHabitTracker(habits: List<String>, habitStatus: MutableMap<String, Hab
                         onStateChange = { habitStatus[habit] = it }
                     )
                     if (habit != habits.last()) {
-                        Divider(
+                        HorizontalDivider(
                             color = Color.Gray.copy(alpha = 0.3f),
                             modifier = Modifier
                                 .width(1.dp)
@@ -236,7 +242,7 @@ fun CustomHabitTracker(habits: List<String>, habitStatus: MutableMap<String, Hab
                 }
             }
         }
-        Divider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.3f), thickness = 1.dp)
     }
 }
 
@@ -265,9 +271,10 @@ fun HabitItem(habit: String, state: HabitState, onStateChange: (HabitState) -> U
 
 @Composable
 fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     label: String,
+    cursorColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -287,6 +294,7 @@ fun CustomTextField(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
+                cursorBrush = SolidColor(cursorColor),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
@@ -301,9 +309,10 @@ fun CustomTextField(
 
 @Composable
 fun CustomSingleLineTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     label: String,
+    cursorColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -324,6 +333,7 @@ fun CustomSingleLineTextField(
                 value = value,
                 onValueChange = onValueChange,
                 singleLine = true,
+                cursorBrush = SolidColor(cursorColor),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
