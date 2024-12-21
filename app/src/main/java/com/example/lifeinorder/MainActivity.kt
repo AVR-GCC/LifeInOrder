@@ -28,6 +28,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,9 @@ fun LifeInOrderApp() {
     val backgroundColor = Color.Black
     val primaryColor = Color(0xFF00B8D4)  // Less saturated cyan
     val cursorColor = Color(0xFF00E5FF)  // Bright cyan for cursor
+
+    var utilityText by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     var selectedDate by remember { mutableStateOf(Date()) }
     var summary by remember { mutableStateOf(TextFieldValue("")) }
@@ -133,9 +139,25 @@ fun LifeInOrderApp() {
 
             // Save Button
             CustomButton(
-                onClick = { /* TODO: Implement save functionality */ },
+                onClick = {
+                    coroutineScope.launch {
+                        try {
+                            utilityText = ApiClient.saveDay()
+                        } catch (e: Exception) {
+                            utilityText = "Error: ${e.message}"
+                        }
+                    }
+                },
                 text = "Save",
                 modifier = Modifier.align(Alignment.End)
+            )
+
+            // Save Button
+            Text(
+                text = utilityText,
+                color = Color.Red,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
