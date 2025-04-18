@@ -5,7 +5,7 @@ import '../styles/Main.css'
 export const Main = () => {
   const [days, setDays] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [dayHeightPixels, setDayHeightPixels] = useState(100);
+  const [dayHeightPixels, setDayHeightPixels] = useState(20);
   const [loading, setLoading] = useState(true);
   
   //const onTap = useCallback((e) => {
@@ -17,28 +17,36 @@ export const Main = () => {
   //  setDayHeightPixels(newHeight);
   //}, [])
   
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await axios.get('http://10.0.0.8:8080/users/1/habit_colors');
-        if (res.data.length) {
-          const days = res.data[0].day_colors.map(({ date }) => date);
-          setDays(days);
-          setColumns(res.data);
-        }
-      } catch (e) {
-        console.log('get failed', e);
+  const getData = async () => {
+    'background only'
+    try {
+      const res = await axios.get('http://10.0.0.8:8080/users/1/habit_colors');
+      
+      const existingDays = res.data[0].day_colors.map(({ date }) => date);
+      const emptyDays = new Array(50);
+      for (let i = 0; i < 50; i++) {
+        emptyDays[i] = '';
       }
+      const days = existingDays.concat(emptyDays);
+      
+      setDays(days);
+      setColumns(res.data);
+    } catch (e) {
+      console.log('get failed', e);
     }
-    getData();
-  }, [])
+  }
+
+  useEffect(getData, [])
 
   const dayHeight = `${dayHeightPixels}px`;
 
       //bindtouchmove={onTap}
   return (
     <view
-      style={{ height: '100vh' }}
+      //bindtouchmove={() => {
+      //  console.log('tapped!');
+      //  getData()
+      //}}
     >
       <view className='TopBar'>
        {columns.map(c => (
@@ -47,20 +55,22 @@ export const Main = () => {
           </text>
         ))}
       </view>
-      <view style={{ display: 'flex' }}>
-        <view className='LeftBar'>
-         {days.map(() => (
-           <view className='DayMarker' style={{ height: dayHeight }}></view>
-         ))}
+      <scroll-view style={{ height: '100vh' }}>
+        <view style={{ display: 'flex' }}>
+          <view className='LeftBar'>
+           {days.map(() => (
+             <view className='DayMarker' style={{ height: dayHeight }}></view>
+           ))}
+          </view>
+          <view className='Checklist'>
+            {columns.map(c => (
+              <view className='Column' style={{ flex: c.weight.toString() }}>
+                {days.map((_, index) => <view className='Square' style={{ background: c.day_colors?.[index]?.color || '#555555', height: dayHeight }} />)}
+              </view>
+            ))}
+          </view>
         </view>
-        <view className='Checklist'>
-          {columns.map(c => (
-            <view className='Column' style={{ flex: c.weight.toString() }}>
-              {c.day_colors.map(day_color => <view className='Square' style={{ background: day_color.color, height: dayHeight }} />)}
-            </view>
-          ))}
-        </view>
-      </view>
+      </scroll-view>
     </view>
   )
 }
