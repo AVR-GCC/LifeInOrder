@@ -4,15 +4,15 @@ import './App.css'
 import arrow from './assets/arrow.png'
 import lynxLogo from './assets/lynx-logo.png'
 import reactLynxLogo from './assets/react-logo.png'
+import Main from './screens/main.tsx'
 
-export function App() {
+export const App = () => {
   const [alterLogo, setAlterLogo] = useState(false)
   const [counter, setCounter] = useState(0)
 
   useEffect(() => {
     console.info('Hello, ReactLynx', counter)
   }, [])
-
   const onTap = useCallback(() => {
     'background only'
     setAlterLogo(!alterLogo)
@@ -20,10 +20,18 @@ export function App() {
   }, [alterLogo])
 
   return (
-    <view><script src="http://localhost:8097"></script>
+    <view>
       <view className='Background' />
       <view className='App'>
-        <view className='Banner'>
+        <view className='Container'>
+          <view className='Buffer' />
+          <Main />
+        </view>
+      </view>
+    </view>
+  )
+}
+      /*<view className='Banner'>
           <view className='Logo' bindtap={onTap}>
             {alterLogo
               ? <image src={reactLynxLogo} className='Logo--react' />
@@ -40,8 +48,4 @@ export function App() {
             to see updates!
           </text>
         </view>
-        <view style={{ flex: 1 }}></view>
-      </view>
-    </view>
-  )
-}
+        <view style={{ flex: 1 }}></view>*/
