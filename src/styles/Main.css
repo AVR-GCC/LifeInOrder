@@ -1,13 +1,14 @@
 .TopBar {
   display: flex;
   background: #ffffff;
-  margin-left: var(--left-bar-width);
+  padding-left: var(--left-bar-width);
+  border-bottom: 1px solid #00000022;
 }
 
 .ColumnTitle {
   color: #222222;
   padding: 10px;
-  border: 1px solid #00000022
+  border: 1px solid #00000022;
 }
 
 .LeftBar {
@@ -30,5 +31,5 @@
 }
 
 .Square {
-  border: 1px solid #00000022
+  border: 1px solid #00000022;
 }
