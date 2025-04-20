@@ -1,8 +1,10 @@
 import { useLynxGlobalEventListener, useCallback, useEffect, useState, useRef } from '@lynx-js/react'
+import { useNavigate } from 'react-router';
 import axios from 'axios'
 import '../styles/Main.css'
 
 export const Main = () => {
+  const nav = useNavigate();
   const [days, setDays] = useState([]);
   const [columns, setColumns] = useState([]);
   const [dayHeightPixels, setDayHeightPixels] = useState(20);
@@ -59,7 +61,7 @@ export const Main = () => {
         <view style={{ display: 'flex' }}>
           <view className='LeftBar'>
            {days.map(() => (
-             <view className='DayMarker' style={{ height: dayHeight }}></view>
+             <view bindtap={() => nav('/day')} className='DayMarker' style={{ height: dayHeight }}></view>
            ))}
           </view>
           <view className='Checklist'>

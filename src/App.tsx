@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from '@lynx-js/react'
+import { MemoryRouter, Routes, Route } from 'react-router';
 
 import './App.css'
 import arrow from './assets/arrow.png'
 import lynxLogo from './assets/lynx-logo.png'
 import reactLynxLogo from './assets/react-logo.png'
 import Main from './screens/main.tsx'
+import Day from './screens/day.tsx'
 
 export const App = () => {
   const [alterLogo, setAlterLogo] = useState(false)
@@ -25,7 +27,12 @@ export const App = () => {
       <view className='App'>
         <view className='Container'>
           <view className='Buffer' />
-          <Main />
+          <MemoryRouter>
+            <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/day" element={<Day />} />
+            </Routes>
+          </MemoryRouter>,
         </view>
       </view>
     </view>
