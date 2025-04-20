@@ -7,8 +7,12 @@
 
 .ColumnTitle {
   color: #222222;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #00000022;
+  height: 30px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .LeftBar {
