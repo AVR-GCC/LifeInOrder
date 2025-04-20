@@ -30,7 +30,7 @@ export const App = () => {
           <MemoryRouter>
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route path="/day" element={<Day />} />
+              <Route path="/day/:date" element={<Day />} />
             </Routes>
           </MemoryRouter>,
         </view>
