@@ -1,25 +1,47 @@
-import { useCallback, useEffect, useState } from '@lynx-js/react'
+import { useEffect, useState } from '@lynx-js/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
+import axios from 'axios'
 
-import './App.css'
-import arrow from './assets/arrow.png'
-import lynxLogo from './assets/lynx-logo.png'
-import reactLynxLogo from './assets/react-logo.png'
-import Main from './screens/main.tsx'
-import Day from './screens/day.tsx'
+import './App.css';
+import Main from './screens/main.jsx';
+import Day from './screens/day.jsx';
+
+export type Value = {
+  id: number,
+  label: string,
+  sequence: number,
+  habit_id: number,
+  color: string,
+  created_at: string
+};
+
+export type Habit = {
+  id: string,
+  name: string,
+  weight: number,
+  sequence: number,
+  habit_type: string,
+  values: { [key: string]: Value }
+};
+
+export type MainProps = {
+  dates?: { [key: string]: { [key: string]: number } },
+  habits?: { [key: string]: Habit }
+}
 
 export const App = () => {
-  const [alterLogo, setAlterLogo] = useState(false)
-  const [counter, setCounter] = useState(0)
+  const [data, setData] = useState<MainProps | null>(null);
+
+  const loadData = async () => {
+    const res: { data: MainProps, status: number } = await axios.get('http://10.0.0.8:8080/users/1/list');
+    if (res.status === 200) {
+      setData(res.data);
+    }
+  }
 
   useEffect(() => {
-    console.info('Hello, ReactLynx', counter)
-  }, [])
-  const onTap = useCallback(() => {
-    'background only'
-    setAlterLogo(!alterLogo)
-    setCounter(counter + 1)
-  }, [alterLogo])
+    loadData();
+  }, []);
 
   return (
     <view>
@@ -29,8 +51,8 @@ export const App = () => {
           <view className='Buffer' />
           <MemoryRouter>
             <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/day/:date" element={<Day />} />
+              <Route path="/" element={<Main dates={data?.dates} habits={data?.habits} />} />
+              <Route path="/day/:date" element={<Day {...data} />} />
             </Routes>
           </MemoryRouter>,
         </view>
@@ -38,21 +60,3 @@ export const App = () => {
     </view>
   )
 }
-      /*<view className='Banner'>
-          <view className='Logo' bindtap={onTap}>
-            {alterLogo
-              ? <image src={reactLynxLogo} className='Logo--react' />
-              : <image src={lynxLogo} className='Logo--lynx' />}
-          </view>
-          <text className='Title'>React</text>
-          <text className='Subtitle'>on Lynx</text>
-        </view>
-        <view className='Content'>
-          <image src={arrow} className='Arrow' />
-          <text className='Description'>Tap the logo {counter} have fun!</text>
-          <text className='Hint'>
-            Edit<text style={{ fontStyle: 'italic' }}>{' src/App.tsx '}</text>
-            to see updates!
-          </text>
-        </view>
-        <view style={{ flex: 1 }}></view>*/

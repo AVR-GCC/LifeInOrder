@@ -1,51 +1,47 @@
-import { useLynxGlobalEventListener, useCallback, useEffect, useState, useRef } from '@lynx-js/react'
+import { useEffect, useState } from '@lynx-js/react'
 import { useNavigate } from 'react-router';
-import axios from 'axios'
 import moment from 'moment'
 import '../styles/Main.css'
+import type { MainProps, Habit } from '../App.jsx';
 
-export const Main = () => {
+const SPARE_DATES = 50;
+const UNFILLED_COLOR = '#555555';
+
+export const Main = ({ dates, habits }: MainProps) => {
   const nav = useNavigate();
-  const [days, setDays] = useState([]);
-  const [columns, setColumns] = useState([]);
-  const [dayHeightPixels, setDayHeightPixels] = useState(20);
-  const [loading, setLoading] = useState(true);
-  
-  //const onTap = useCallback((e) => {
-  //  'background only'
-  //  const newHeight = e.touches[0].y / 3;
-  //  console.log('newHeight', newHeight);
-  //  console.log('e', e);
-  //
-  //  setDayHeightPixels(newHeight);
-  //}, [])
-  
-  const getData = async () => {
-    'background only'
-    try {
-      const res = await axios.get('http://10.0.0.8:8080/users/1/habit_colors');
-      
-      const existingDays = res.data[0].day_colors.map(({ date }) => date);
+  const [days, setDays] = useState<string[]>([]);
+  const [columns, setColumns] = useState<Habit[]>([]);
+  const [dayHeightPixels, _setDayHeightPixels] = useState(20);
 
-      const currentMoment = existingDays.length ? moment(existingDays[existingDays.length - 1]) : moment();
-      if (existingDays.length) {
-        currentMoment.add(1, 'd');
+  useEffect(() => {
+    if (habits !== undefined) {
+      const columnIds = Object.keys(habits);
+      const newColumns = new Array(columnIds.length);
+      for (let i = 0; i < columnIds.length; i++) {
+        newColumns[i] = habits[columnIds[i]];
+        newColumns[i].id = parseInt(columnIds[i], 10);
       }
-      const emptyDays = new Array(50);
-      for (let i = 0; i < 50; i++) {
-        emptyDays[i] = currentMoment.format('YYYY-MM-DD');
-        currentMoment.add(1, 'd');
-      }
-      const days = existingDays.concat(emptyDays);
-      
-      setDays(days);
-      setColumns(res.data);
-    } catch (e) {
-      console.log('get failed', e);
+      const sortedColumns = newColumns.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+      setColumns(sortedColumns);
     }
-  }
+  }, [habits]);
 
-  useEffect(getData, [])
+  useEffect(() => {
+    if (dates !== undefined) {
+      const existingDays = Object.keys(dates);
+      const sortedExistingDays = existingDays.sort((a, b) => a > b ? 1 : -1);
+      const datesEmpty = !sortedExistingDays.length;
+      const currentDate = datesEmpty ? moment() : moment(sortedExistingDays[sortedExistingDays.length - 1]).add(1, 'd');
+      const newDates = new Array(SPARE_DATES);
+      for (let i = 0; i < SPARE_DATES - 1; i++) {
+        newDates[i] = currentDate.format('YYYY-MM-DD');
+        currentDate.add(1, 'd');
+      }
+      setDays([...existingDays, ...newDates]);
+    }
+  }, [dates]);
+
+  if (dates === undefined) return <text>Hi</text>
 
   const dayHeight = `${dayHeightPixels}px`;
 
@@ -60,9 +56,9 @@ export const Main = () => {
       <view className='TopBar'>
        {columns.map(c => (
           <text className='ColumnTitle' style={{ flex: c.weight.toString() }}>
-            {c.habit_name}
+            {c.name}
           </text>
-        ))}
+       ))}
       </view>
       <scroll-view style={{ height: '100vh' }}>
         <view style={{ display: 'flex' }}>
@@ -74,7 +70,15 @@ export const Main = () => {
           <view className='Checklist'>
             {columns.map(c => (
               <view className='Column' style={{ flex: c.weight.toString() }}>
-                {days.map((_, index) => <view className='Square' style={{ background: c.day_colors?.[index]?.color || '#555555', height: dayHeight }} />)}
+                {days.map((day) => (
+                  <view
+                    className='Square'
+                    style={{
+                      background: c.values[dates?.[day]?.[c.id]?.toString()]?.color || UNFILLED_COLOR,
+                      height: dayHeight
+                    }}
+                  />
+                ))}
               </view>
             ))}
           </view>
