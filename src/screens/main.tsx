@@ -2,43 +2,26 @@ import { useEffect, useState } from '@lynx-js/react'
 import { useNavigate } from 'react-router';
 import moment from 'moment'
 import '../styles/Main.css'
-import type { MainProps, Habit } from '../App.jsx';
+import { type MainProps, type Date, UNFILLED_COLOR } from '../App.jsx';
 
 const SPARE_DATES = 50;
-const UNFILLED_COLOR = '#555555';
 
-export const Main = ({ dates, habits }: MainProps) => {
+export const Main = (props: { data: MainProps }) => {
+  if (props.data === null) return <text>Loading...</text>;
+  const { dates, habits } = props.data;
   const nav = useNavigate();
-  const [days, setDays] = useState<string[]>([]);
-  const [columns, setColumns] = useState<Habit[]>([]);
+  const [days, setDays] = useState<Date[]>([]);
   const [dayHeightPixels, _setDayHeightPixels] = useState(20);
 
   useEffect(() => {
-    if (habits !== undefined) {
-      const columnIds = Object.keys(habits);
-      const newColumns = new Array(columnIds.length);
-      for (let i = 0; i < columnIds.length; i++) {
-        newColumns[i] = habits[columnIds[i]];
-        newColumns[i].id = parseInt(columnIds[i], 10);
-      }
-      const sortedColumns = newColumns.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-      setColumns(sortedColumns);
-    }
-  }, [habits]);
-
-  useEffect(() => {
-    if (dates !== undefined) {
-      const existingDays = Object.keys(dates);
-      const sortedExistingDays = existingDays.sort((a, b) => a > b ? 1 : -1);
-      const datesEmpty = !sortedExistingDays.length;
-      const currentDate = datesEmpty ? moment() : moment(sortedExistingDays[sortedExistingDays.length - 1]).add(1, 'd');
+      const datesEmpty = !dates.length;
+      const currentDate = datesEmpty ? moment() : moment(dates[dates.length - 1].date).add(1, 'd');
       const newDates = new Array(SPARE_DATES);
-      for (let i = 0; i < SPARE_DATES - 1; i++) {
-        newDates[i] = currentDate.format('YYYY-MM-DD');
+      for (let i = 0; i < SPARE_DATES; i++) {
+        newDates[i] = { date: currentDate.format('YYYY-MM-DD'), values: {} };
         currentDate.add(1, 'd');
       }
-      setDays([...existingDays, ...newDates]);
-    }
+      setDays([...dates, ...newDates]);
   }, [dates]);
 
   if (dates === undefined) return <text>Hi</text>
@@ -53,10 +36,11 @@ export const Main = ({ dates, habits }: MainProps) => {
       //  getData()
       //}}
     >
+      <view className='Buffer' />
       <view className='TopBar'>
-       {columns.map(c => (
-          <text className='ColumnTitle' style={{ flex: c.weight.toString() }}>
-            {c.name}
+       {habits.map(h => (
+          <text className='ColumnTitle' style={{ flex: h.habit.weight.toString() }}>
+            {h.habit.name}
           </text>
        ))}
       </view>
@@ -68,17 +52,17 @@ export const Main = ({ dates, habits }: MainProps) => {
            ))}
           </view>
           <view className='Checklist'>
-            {columns.map(c => (
-              <view className='Column' style={{ flex: c.weight.toString() }}>
-                {days.map((day) => (
-                  <view
-                    className='Square'
-                    style={{
-                      background: c.values[dates?.[day]?.[c.id]?.toString()]?.color || UNFILLED_COLOR,
-                      height: dayHeight
-                    }}
-                  />
-                ))}
+            {habits.map(h => (
+              <view className='Column' style={{ flex: h.habit.weight.toString() }}>
+                {days.map((day) => {
+                  if (Object.keys(day.values).length === 0) return <view className='Square' style={{ background: UNFILLED_COLOR, height: dayHeight }} />
+                  const habitIdStr = h.habit.id.toString();
+                  const dayValue = day.values[habitIdStr];
+                  const valueIndex = h.values_hashmap[dayValue];
+                  const valueObj = h.values[valueIndex];
+                  const background = valueObj?.color || UNFILLED_COLOR;
+                  return <view className='Square' style={{ background, height: dayHeight }} />;
+                })}
               </view>
             ))}
           </view>

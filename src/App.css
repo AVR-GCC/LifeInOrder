@@ -1,12 +1,16 @@
 :root {
   background-color: #000;
-  --color-text: #fff;
-  --left-bar-width: 20px;
+  --color-text: #ecefca;
+  --theme-color-one: #213448;
+  --theme-color-two: #547792;
+  --theme-color-three: #94b4c1;
+  --theme-color-four: #ecefca;
+  --left-bar-width: 30px;
 }
 
 .Background {
   position: fixed;
-  background: #ffffff;
+  background: var(--theme-color-one);
   width: 200vw;
   height: 200vw;
 }
@@ -24,12 +28,6 @@
   position: fixed;
   height: 100vh;
   width: 100vw;
-}
-
-.Buffer {
-  height: 40px;
-  width: 100vw;
-  background: #000000;
 }
 
 text {
