@@ -1,6 +1,7 @@
 import { useEffect, useState } from '@lynx-js/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
 import axios from 'axios'
+import moment from 'moment'
 
 import './App.css';
 import Main from './screens/main.jsx';
@@ -42,6 +43,7 @@ export type SetDayHabitValue = (dayIndex: number, habitIndex: number, valueId: n
 export type GetDayHabitValue = (dayIndex: number, habitIndex: number) => Value | null;
 
 export const UNFILLED_COLOR = '#555555';
+const SPARE_DATES = 50;
 
 export const App = () => {
   const [data, setData] = useState<MainProps>(null);
@@ -49,8 +51,17 @@ export const App = () => {
 
   const loadData = async () => {
     const res: { data: MainProps, status: number } = await axios.get('http://10.0.0.8:8080/users/1/list');
-    if (res.status === 200) {
-      setData(res.data);
+    if (res.data) {
+      const { dates, habits } = res.data;
+      const datesEmpty = !dates.length;
+      const currentDate = datesEmpty ? moment() : moment(dates[dates.length - 1].date).add(1, 'd');
+      const newDates = new Array(SPARE_DATES);
+      for (let i = 0; i < SPARE_DATES; i++) {
+        newDates[i] = { date: currentDate.format('YYYY-MM-DD'), values: {} };
+        currentDate.add(1, 'd');
+      }
+
+      setData({ dates: [...dates, ...newDates], habits });
     }
   }
 
@@ -63,8 +74,12 @@ export const App = () => {
     const { dates, habits } = data;
     const newDates = [...dates];
     const habitObj = habits[habitIndex];
+    if (!newDates[dateIndex]) {
+      for (let i = newDates.length; i <= dateIndex; i++) {
+        newDates.push({ date: moment(newDates[i - 1].date).add(1, 'd').format('YYYY-MM-DD'), values: {} });
+      }
+    }
     newDates[dateIndex].values[habitObj.habit.id] = valueId;
-    console.log(newDates);
     setData({ ...data, dates: newDates });
   }
 
