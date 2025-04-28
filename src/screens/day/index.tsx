@@ -32,8 +32,8 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
                 title={h.habit.name}
                 value={value}
                 onTap={() => {
-                  const currentIndex = h.values_hashmap[value?.id?.toString()] || -1;
-                  const nextIndexRaw = currentIndex + 1;
+                  const currentIndex = h.values_hashmap[value?.id?.toString()];
+                  const nextIndexRaw = currentIndex === undefined ? 0 : currentIndex + 1;
                   const nextIndex = nextIndexRaw === h.values.length ? 0 : nextIndexRaw;
                   const nextValue = h.values[nextIndex];
                   const nextValueId = nextValue.id;
