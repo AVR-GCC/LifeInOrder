@@ -2,13 +2,13 @@ import { useEffect, useState } from '@lynx-js/react'
 import { useNavigate } from 'react-router';
 import moment from 'moment'
 import '../styles/Main.css'
-import { type MainProps, type Date, UNFILLED_COLOR } from '../App.jsx';
+import { type MainProps, type Date, UNFILLED_COLOR, type GetDayHabitValue } from '../App.jsx';
 
 const SPARE_DATES = 50;
 
-export const Main = (props: { data: MainProps }) => {
+export const Main = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue }) => {
   if (props.data === null) return <text>Loading...</text>;
-  const { dates, habits } = props.data;
+  const { data: { dates, habits }, getDayHabitValue } = props;
   const nav = useNavigate();
   const [days, setDays] = useState<Date[]>([]);
   const [dayHeightPixels, _setDayHeightPixels] = useState(20);
@@ -47,19 +47,16 @@ export const Main = (props: { data: MainProps }) => {
       <scroll-view style={{ height: '100vh' }}>
         <view style={{ display: 'flex' }}>
           <view className='LeftBar'>
-           {days.map(day => (
-             <view bindtap={() => nav(`/day/${day}`)} className='DayMarker' style={{ height: dayHeight }}></view>
+           {days.map((_, dayIndex) => (
+             <view bindtap={() => nav(`/day/${dayIndex}`)} className='DayMarker' style={{ height: dayHeight }}></view>
            ))}
           </view>
           <view className='Checklist'>
-            {habits.map(h => (
+            {habits.map((h, habitIndex) => (
               <view className='Column' style={{ flex: h.habit.weight.toString() }}>
-                {days.map((day) => {
+                {days.map((day, dayIndex) => {
                   if (Object.keys(day.values).length === 0) return <view className='Square' style={{ background: UNFILLED_COLOR, height: dayHeight }} />
-                  const habitIdStr = h.habit.id.toString();
-                  const dayValue = day.values[habitIdStr];
-                  const valueIndex = h.values_hashmap[dayValue];
-                  const valueObj = h.values[valueIndex];
+                  const valueObj = getDayHabitValue(dayIndex, habitIndex)
                   const background = valueObj?.color || UNFILLED_COLOR;
                   return <view className='Square' style={{ background, height: dayHeight }} />;
                 })}

@@ -37,24 +37,48 @@ export type MainProps = {
   habits: Habit[]
 } | null;
 
+export type SetDayHabitValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
+
+export type GetDayHabitValue = (dayIndex: number, habitIndex: number) => Value | null;
+
 export const UNFILLED_COLOR = '#555555';
 
 export const App = () => {
   const [data, setData] = useState<MainProps>(null);
+  console.log('data', data);
 
   const loadData = async () => {
     const res: { data: MainProps, status: number } = await axios.get('http://10.0.0.8:8080/users/1/list');
-      console.log('res', res);
     if (res.status === 200) {
-      console.log('res.data', res.data);
       setData(res.data);
     }
   }
 
   useEffect(() => {
-    console.log('Effect');
     loadData();
   }, []);
+
+  const setDayHabitValue: SetDayHabitValue = (dateIndex, habitIndex, valueId) => {
+    if (data === null) return;
+    const { dates, habits } = data;
+    const newDates = [...dates];
+    const habitObj = habits[habitIndex];
+    newDates[dateIndex].values[habitObj.habit.id] = valueId;
+    console.log(newDates);
+    setData({ ...data, dates: newDates });
+  }
+
+  const getDayHabitValue: GetDayHabitValue = (dateIndex, habitIndex) => {
+    if (data === null) return null;
+    const { dates, habits } = data;
+    const day = dates[dateIndex];
+    const habitObj = habits[habitIndex];
+    const dayValue = day.values[habitObj.habit.id];
+    const valueIndex = habitObj.values_hashmap[dayValue];
+    const valueObj = habitObj.values[valueIndex];
+    return valueObj;
+  }
+
 
   return (
     <view>
@@ -63,8 +87,10 @@ export const App = () => {
         <view className='Container'>
           <MemoryRouter>
             <Routes>
-              <Route path="/" element={<Main data={data} />} />
-              <Route path="/day/:date" element={<Day {...data} />} />
+              <Route path="/" element={<Main getDayHabitValue={getDayHabitValue} data={data} />} />
+              <Route path="/day/:date" element={
+                <Day getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
+              } />
             </Routes>
           </MemoryRouter>
         </view>

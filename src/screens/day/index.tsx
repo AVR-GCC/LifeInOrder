@@ -1,27 +1,15 @@
 import { useLynxGlobalEventListener, useCallback, useEffect, useState, useRef } from '@lynx-js/react'
 import { useNavigate, useParams } from 'react-router';
 import '../../styles/Day.css'
-import type { Habit, MainProps } from '../../App.jsx';
+import type { SetDayHabitValue, GetDayHabitValue, MainProps } from '../../App.jsx';
 import HabitButton from './habitButton.jsx';
 
-export const Day = ({ dates, habits }: MainProps) => {
-  const nav = useNavigate();
+export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayHabitValue }) => {
   const { date } = useParams();
-  const thisDay = dates[date];
-  const [habitArray, setHabitArray] = useState<Habit[]>([]);
-  
-  useEffect(() => {
-    if (habits !== undefined) {
-      const habitIds = Object.keys(habits);
-      const unsorted = new Array(habitIds.length);
-      for (let i = 0; i < habitIds.length; i++) {
-        unsorted[i] = habits[habitIds[i]];
-        unsorted[i].id = parseInt(habitIds[i], 10);
-      }
-      const sortedHabits = unsorted.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
-      setHabitArray(sortedHabits);
-    }
-  }, [habits]);
+  if (props.data === null || date === undefined) return <text>Loading...</text>;
+  const dateIndex = parseInt(date, 10);
+  const { data: { habits }, setDayHabitValue, getDayHabitValue } = props;
+  const nav = useNavigate();
 
   return (
     <view>
@@ -36,15 +24,24 @@ export const Day = ({ dates, habits }: MainProps) => {
           {'<'}
         </text>
         <scroll-view className='DayContainer'>
-          {habitArray.map(h => (
-            <HabitButton
-              title={h?.name}
-              value={h?.values?.[thisDay?.[h?.id]]}
-              onTap={() => {
-                const currentValue = h?.values?.[thisDay?.[h?.id]];
-              }}
-            />
-          ))}
+          {habits.map((h, habitIndex) => {
+            const value = getDayHabitValue(dateIndex, habitIndex);
+            if (value === null) return <text>Value not found</text>;
+            return (
+              <HabitButton
+                title={h.habit.name}
+                value={value}
+                onTap={() => {
+                  const currentIndex = h.values_hashmap[value.id.toString()];
+                  const nextIndexRaw = currentIndex + 1;
+                  const nextIndex = nextIndexRaw === h.values.length ? 0 : nextIndexRaw;
+                  const nextValue = h.values[nextIndex];
+                  const nextValueId = nextValue.id;
+                  setDayHabitValue(dateIndex, habitIndex, nextValueId);
+                }}
+              />
+            );
+          })}
         </scroll-view>
       </view>
     </view>
