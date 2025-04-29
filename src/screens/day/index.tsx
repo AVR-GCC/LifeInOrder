@@ -16,7 +16,7 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
   return (
     <view>
       <view className='Buffer' />
-      <text className='DayTitle'>{moment(dates[dateIndex].date).format('MMM, DD YYYY')}</text>
+      <text className='DayTitle'>{moment(dates[dateIndex].date).format('MMMM, DD YYYY')}</text>
       <view className='DayContainer'>
         <view
           className='BackArrowContainer'
@@ -46,6 +46,7 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
               />
             );
           })}
+          <view className='ClearBuffer' />
         </scroll-view>
       </view>
     </view>
