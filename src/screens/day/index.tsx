@@ -18,10 +18,8 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
       <view className='Buffer' />
       <view style={{ display: 'flex' }}>
       <view
-          className='BackArrowContainer'
-          bindtap={() => {
-            nav('/');
-          }}
+        className='BackArrowContainer'
+        bindtap={() => nav('/')}
       >
         <image
           className='BackArrow'
