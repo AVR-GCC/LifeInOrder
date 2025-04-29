@@ -1,6 +1,8 @@
 import { useLynxGlobalEventListener, useCallback, useEffect, useState, useRef } from '@lynx-js/react'
 import { useNavigate, useParams } from 'react-router';
-import '../../styles/Day.css'
+import '../../styles/Day.css';
+import LeftArrow from '../../assets/arrow-left.png';
+import arrow from '../../assets/arrow.png';
 import type { SetDayHabitValue, GetDayHabitValue, MainProps } from '../../App.jsx';
 import HabitButton from './habitButton.jsx';
 
@@ -15,14 +17,17 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
     <view>
       <view className='Buffer' />
       <view style={{ display: 'flex' }}>
-        <text
+      <view
+          className='BackArrowContainer'
           bindtap={() => {
             nav('/');
           }}
-          style={{ fontSize: '40px', marginLeft: '10px' }}
-        >
-          {'<'}
-        </text>
+      >
+        <image
+          className='BackArrow'
+          src={LeftArrow}
+        />
+      </view>
         <scroll-view className='DayContainer'>
           {habits.map((h, habitIndex) => {
             const value = getDayHabitValue(dateIndex, habitIndex);
