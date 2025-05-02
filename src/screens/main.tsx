@@ -1,7 +1,8 @@
 import { useState } from '@lynx-js/react'
 import { useNavigate } from 'react-router';
 import '../styles/Main.css'
-import { type MainProps, UNFILLED_COLOR, type GetDayHabitValue } from '../App.jsx';
+import type { GetDayHabitValue, MainProps } from '../types/index.jsx';
+import { UNFILLED_COLOR } from '../App.jsx';
 
 export const Main = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue }) => {
   if (props.data === null) return <text>Loading...</text>;
@@ -15,12 +16,7 @@ export const Main = (props: { data: MainProps, getDayHabitValue: GetDayHabitValu
 
       //bindtouchmove={onTap}
   return (
-    <view
-      //bindtouchmove={() => {
-      //  console.log('tapped!');
-      //  getData()
-      //}}
-    >
+    <view>
       <view className='Buffer' />
       <view className='TopBar'>
        {habits.map(h => (

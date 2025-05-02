@@ -1,46 +1,12 @@
 import { useEffect, useState } from '@lynx-js/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import axios from 'axios'
-import moment from 'moment'
+import moment from 'moment';
 
 import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
-
-export type Value = {
-  id: number,
-  label: string,
-  sequence: number,
-  habit_id: number,
-  color: string,
-  created_at: string
-};
-
-export type Habit = {
-  habit: {
-    id: string,
-    name: string,
-    weight: number,
-    sequence: number,
-    habit_type: string,
-  }
-  values: Value[]
-  values_hashmap: { [key: string]: number }
-};
-
-export type Date = {
-  date: string,
-  values: { [key: string]: number }
-};
-
-export type MainProps = {
-  dates: Date[],
-  habits: Habit[]
-} | null;
-
-export type SetDayHabitValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
-
-export type GetDayHabitValue = (dayIndex: number, habitIndex: number) => Value | null;
+import { getUserList } from './server/index.jsx';
+import type { GetDayHabitValue, MainProps, SetDayHabitValue } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
@@ -50,9 +16,9 @@ export const App = () => {
   console.log('data', data);
 
   const loadData = async () => {
-    const res: { data: MainProps, status: number } = await axios.get('http://10.0.0.8:8080/users/1/list');
-    if (res.data) {
-      const { dates, habits } = res.data;
+    const data = await getUserList();
+    if (data) {
+      const { dates, habits } = data;
       const datesEmpty = !dates.length;
       const currentDate = datesEmpty ? moment() : moment(dates[dates.length - 1].date).add(1, 'd');
       const newDates = new Array(SPARE_DATES);
@@ -93,7 +59,6 @@ export const App = () => {
     const valueObj = habitObj.values[valueIndex];
     return valueObj;
   }
-
 
   return (
     <view>

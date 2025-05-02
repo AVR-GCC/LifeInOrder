@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router';
 import moment from 'moment'
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
-import type { SetDayHabitValue, GetDayHabitValue, MainProps } from '../../App.jsx';
 import HabitButton from './habitButton.jsx';
+import type { GetDayHabitValue, MainProps, SetDayHabitValue } from '../../types/index.jsx';
 
 export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayHabitValue }) => {
   const { date } = useParams();
