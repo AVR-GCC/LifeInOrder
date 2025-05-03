@@ -29,6 +29,12 @@ export type MainProps = {
   habits: Habit[]
 } | null;
 
+export type VerticalChevronsProps = {
+  onTap: (isDown: boolean) => void,
+  upDisabled: boolean,
+  downDisabled: boolean
+};
+
 export type HabitButtonProps = {
   title: string,
   value: Value,
