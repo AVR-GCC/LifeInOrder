@@ -23,7 +23,7 @@ export const App = () => {
       const datesEmpty = !dates.length;
       let datesIndex = 0;
       const datesFilled = [];
-      const incrementalDate = datesEmpty ? moment() : moment(dates[0].date).add(1, 'd');
+      const incrementalDate = datesEmpty ? moment() : moment(dates[0].date);
       let nextDate = incrementalDate.format(dateFormat);
       while (datesIndex < dates.length) {
         const currentIncremental = incrementalDate.format(dateFormat);
