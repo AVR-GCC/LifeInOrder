@@ -14,18 +14,27 @@ export const getUserList = async () => {
     return null;
 }
 
-export const setDayValueServer: SetDayValueServer = async (date, habitId, valueId) => {
-  const body = JSON.stringify({
-    value_id: valueId,
-    habit_id: habitId,
-    date,
-    text: null,
-    number: null
-  });
-  const config = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body
+export const setDayValueServer: SetDayValueServer = (() => {
+  const debounces: { [key: string]: ReturnType<typeof setTimeout> } = {};
+  const func: SetDayValueServer = async (date, habitId, valueId) => {
+    const body = JSON.stringify({
+      value_id: valueId,
+      habit_id: habitId,
+      date,
+      text: null,
+      number: null
+    });
+    const config = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    };
+    return fetch('http://10.0.0.8:8080/day_values', config);
+  }
+  const debounced: SetDayValueServer = (date, habitId, valueId) => {
+    const key = `${date}-${habitId}`;
+    if (debounces[key]) clearTimeout(debounces[key]);
+    debounces[key] = setTimeout(() => func(date, habitId, valueId), 1000);
   };
-  return fetch('http://10.0.0.8:8080/day_values', config);
-}
+  return debounced;
+})();
