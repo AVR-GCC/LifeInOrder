@@ -5,6 +5,7 @@ import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
 import HabitButton from './habitButton.jsx';
 import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
+import VerticalChevrons from '../../components/verticalChevrons.jsx';
 
 export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
   const { date } = useParams();
@@ -18,6 +19,13 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
       <view className='Buffer' />
       <text className='DayTitle'>{moment(dates[dateIndex].date).format('MMMM, DD YYYY')}</text>
       <view className='DayContainer'>
+        <view className='VerticalChevronsContainer'>
+          <VerticalChevrons
+            onTap={(isDown) => nav(`/day/${dateIndex + (isDown ? 1 : -1)}`)}
+            upDisabled={dateIndex === 0}
+            downDisabled={dateIndex === dates.length - 1}
+          />
+        </view>
         <view
           className='BackArrowContainer'
           bindtap={() => nav('/')}
