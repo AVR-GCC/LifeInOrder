@@ -29,6 +29,12 @@ export type MainProps = {
   habits: Habit[]
 } | null;
 
+export type HabitButtonProps = {
+  title: string,
+  value: Value,
+  onTap: () => void
+};
+
 export type SetDayValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
 export type SetDayValueServer = (date: string, habitId: string, valueId: number) => void;
 

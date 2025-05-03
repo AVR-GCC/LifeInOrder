@@ -1,11 +1,6 @@
 import '../../styles/Day.css'
-import { UNFILLED_COLOR, type Value } from '../../App.jsx';
-
-type HabitButtonProps = {
-  title: string,
-  value: Value,
-  onTap: () => void
-}
+import { UNFILLED_COLOR } from '../../App.jsx';
+import type { HabitButtonProps } from '../../types/index.jsx';
 
 export const HabitButton = ({ title, value, onTap }: HabitButtonProps) => {
   return (
