@@ -5,8 +5,8 @@ import moment from 'moment';
 import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
-import { getUserList } from './server/index.jsx';
-import type { GetDayHabitValue, MainProps, SetDayHabitValue } from './types/index.jsx';
+import { getUserList, setDayValueServer } from './server/index.jsx';
+import type { GetDayHabitValue, MainProps, SetDayValue } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
@@ -35,7 +35,7 @@ export const App = () => {
     loadData();
   }, []);
 
-  const setDayHabitValue: SetDayHabitValue = (dateIndex, habitIndex, valueId) => {
+  const setDayHabitValue: SetDayValue = (dateIndex, habitIndex, valueId) => {
     if (data === null) return;
     const { dates, habits } = data;
     const newDates = [...dates];
@@ -46,6 +46,7 @@ export const App = () => {
       }
     }
     newDates[dateIndex].values[habitObj.habit.id] = valueId;
+    setDayValueServer(newDates[dateIndex].date, habitObj.habit.id, valueId)
     setData({ ...data, dates: newDates });
   }
 

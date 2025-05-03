@@ -29,6 +29,7 @@ export type MainProps = {
   habits: Habit[]
 } | null;
 
-export type SetDayHabitValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
+export type SetDayValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
+export type SetDayValueServer = (date: string, habitId: string, valueId: number) => void;
 
 export type GetDayHabitValue = (dayIndex: number, habitIndex: number) => Value | null;

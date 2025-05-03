@@ -4,9 +4,9 @@ import moment from 'moment'
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
 import HabitButton from './habitButton.jsx';
-import type { GetDayHabitValue, MainProps, SetDayHabitValue } from '../../types/index.jsx';
+import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
 
-export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayHabitValue }) => {
+export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
   const { date } = useParams();
   if (props.data === null || date === undefined) return <text>Loading...</text>;
   const dateIndex = parseInt(date, 10);
