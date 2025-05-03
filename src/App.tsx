@@ -10,6 +10,7 @@ import type { GetDayHabitValue, MainProps, SetDayValue } from './types/index.jsx
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
+const dateFormat = 'YYYY-MM-DD';
 
 export const App = () => {
   const [data, setData] = useState<MainProps>(null);
@@ -20,14 +21,30 @@ export const App = () => {
     if (data) {
       const { dates, habits } = data;
       const datesEmpty = !dates.length;
+      let datesIndex = 0;
+      const datesFilled = [];
+      const incrementalDate = datesEmpty ? moment() : moment(dates[0].date).add(1, 'd');
+      let nextDate = incrementalDate.format(dateFormat);
+      while (datesIndex < dates.length) {
+        const currentIncremental = incrementalDate.format(dateFormat);
+        if (currentIncremental === nextDate) {
+          datesFilled.push(dates[datesIndex]);
+          datesIndex++;
+          if (datesIndex === dates.length) break;
+          nextDate = dates[datesIndex].date;
+        } else {
+          datesFilled.push({ date: currentIncremental, values: {} });
+        }
+        incrementalDate.add(1, 'd');
+      }
       const currentDate = datesEmpty ? moment() : moment(dates[dates.length - 1].date).add(1, 'd');
       const newDates = new Array(SPARE_DATES);
       for (let i = 0; i < SPARE_DATES; i++) {
-        newDates[i] = { date: currentDate.format('YYYY-MM-DD'), values: {} };
+        newDates[i] = { date: currentDate.format(dateFormat), values: {} };
         currentDate.add(1, 'd');
       }
 
-      setData({ dates: [...dates, ...newDates], habits });
+      setData({ dates: [...datesFilled, ...newDates], habits });
     }
   }
 
