@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import moment from 'moment'
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
+import Settings2 from '../../assets/settings2.png';
 import HabitButton from './habitButton.jsx';
 import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
 import VerticalChevrons from '../../components/verticalChevrons.jsx';
@@ -26,6 +27,15 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
             onTap={(isDown) => nav(`/day/${dateIndex + (isDown ? 1 : -1)}`)}
             upDisabled={dateIndex === 0}
             downDisabled={dateIndex === dates.length - 1}
+          />
+        </view>
+        <view
+          className='SettingsButtonContainer'
+          bindtap={() => nav(`/day/${dateIndex}/habits`)}
+        >
+          <image
+            className='SettingsButton'
+            src={Settings2}
           />
         </view>
         <view

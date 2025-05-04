@@ -5,6 +5,7 @@ import moment from 'moment';
 import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
+import Habits from './screens/habits/index.jsx';
 import { getUserList, setDayValueServer } from './server/index.jsx';
 import type { GetDayHabitValue, MainProps, SetDayValue } from './types/index.jsx';
 
@@ -88,6 +89,9 @@ export const App = () => {
               <Route path="/" element={<Main getDayHabitValue={getDayHabitValue} data={data} />} />
               <Route path="/day/:date" element={
                 <Day getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
+              } />
+              <Route path="/day/:date/habits" element={
+                <Habits getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
               } />
             </Routes>
           </MemoryRouter>

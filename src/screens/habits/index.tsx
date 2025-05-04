@@ -1,0 +1,38 @@
+import { useNavigate, useParams } from 'react-router';
+import '../../styles/Day.css';
+import LeftArrow from '../../assets/arrow-left.png';
+import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
+
+export const Habits = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
+  const { date } = useParams();
+  if (props.data === null || date === undefined) return <text>Loading...</text>;
+  const dateIndex = parseInt(date, 10);
+  const { data: { habits } } = props;
+  const nav = useNavigate();
+
+  return (
+    <view>
+      <view className='Buffer' />
+      <text className='DayTitle'>Habits</text>
+      <view className='DayContainer'>
+        <view
+          className='BackArrowContainer'
+          bindtap={() => nav(`/day/${dateIndex}`)}
+        >
+          <image
+            className='BackArrow'
+            src={LeftArrow}
+          />
+        </view>
+        <scroll-view className='DayContainer'>
+          {habits.map((h) => {
+            return <text>{h.habit.name}</text>;
+          })}
+          <view className='ClearBuffer' />
+        </scroll-view>
+      </view>
+    </view>
+  )
+}
+
+export default Habits;
