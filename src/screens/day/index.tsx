@@ -7,6 +7,8 @@ import HabitButton from './habitButton.jsx';
 import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
 import VerticalChevrons from '../../components/verticalChevrons.jsx';
 
+const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
   const { date } = useParams();
   if (props.data === null || date === undefined) return <text>Loading...</text>;
@@ -17,7 +19,7 @@ export const Day = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue
   return (
     <view>
       <view className='Buffer' />
-      <text className='DayTitle'>{moment(dates[dateIndex].date).format('MMMM, DD YYYY')}</text>
+      <text className='DayTitle'>{dayNames[moment(dates[dateIndex].date).day()]}, {moment(dates[dateIndex].date).format('MMMM DD, YYYY')}</text>
       <view className='DayContainer'>
         <view className='VerticalChevronsContainer'>
           <VerticalChevrons
