@@ -36,6 +36,12 @@ export type VerticalChevronsProps = {
   downDisabled: boolean
 };
 
+export type HabitCardProps = {
+  habit: Habit,
+  index: number,
+  totalHabits: number
+};
+
 export type HabitButtonProps = {
   title: string,
   value: Value,

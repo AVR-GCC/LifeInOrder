@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
 import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
+import HabitCard from './habitCard.jsx';
 
 export const Habits = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
   const { date } = useParams();
@@ -25,8 +26,8 @@ export const Habits = (props: { data: MainProps, getDayHabitValue: GetDayHabitVa
           />
         </view>
         <scroll-view className='DayContainer'>
-          {habits.map((h) => {
-            return <text>{h.habit.name}</text>;
+          {habits.map((h, index) => {
+            return <HabitCard habit={h} index={index} totalHabits={habits.length} />;
           })}
           <view className='ClearBuffer' />
         </scroll-view>

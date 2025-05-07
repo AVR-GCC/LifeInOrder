@@ -1,0 +1,44 @@
+import '../../styles/HabitCard.css'
+import Edit from '../../assets/edit.png';
+import Delete from '../../assets/delete.png';
+import type { HabitCardProps } from '../../types/index.jsx';
+import VerticalChevrons from '../../components/verticalChevrons.jsx';
+
+export const HabitCard = ({ habit, index, totalHabits }: HabitCardProps) => {
+  return (
+    <view className="HabitCard">
+      <view className="LeftSide">
+        <text className="HabitName">{habit.habit.name}</text>
+        <view className="ValueColors">
+          {habit.values.map(value => (
+            <view className="ValueColor" style={{ background: value.color }} />
+          ))}
+        </view>
+      </view>
+      <view className="RightSide">
+        <view className="ButtonHolder" style={{ paddingBottom: '6px', paddingRight: '12px' }}>
+          <VerticalChevrons
+            dark={true}
+            onTap={(isDown) => console.log('Moving habit to the down?', isDown) }
+            upDisabled={index === 0}
+            downDisabled={index === totalHabits - 1}
+          />
+        </view>
+        <view className="ButtonHolder">
+          <image
+            className='Edit'
+            src={Edit}
+          />
+        </view>
+        <view className="ButtonHolder">
+          <image
+            className='Delete'
+            src={Delete}
+          />
+        </view>
+      </view>
+    </view>
+  )
+}
+
+export default HabitCard;
