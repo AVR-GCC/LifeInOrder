@@ -1,8 +1,10 @@
 import '../styles/VerticalChevrons.css'
 import ChevronUp from '../assets/chevron-up.png';
+import ChevronUpDark from '../assets/chevron-up-dark.png';
 import type { VerticalChevronsProps } from '../types/index.jsx';
 
-export const VerticalChevrons = ({ onTap, upDisabled, downDisabled }: VerticalChevronsProps) => {
+export const VerticalChevrons = ({ dark, onTap, upDisabled, downDisabled }: VerticalChevronsProps) => {
+  const chevron = dark ? ChevronUpDark : ChevronUp;
   return (
     <view className="VerticalChevronsHolder">
       <view
@@ -13,7 +15,7 @@ export const VerticalChevrons = ({ onTap, upDisabled, downDisabled }: VerticalCh
       >
         <image
           className='Chevron'
-          src={ChevronUp}
+          src={chevron}
           style={{ opacity: upDisabled ? 0.3 : 1 }}
         />
       </view>
@@ -25,7 +27,7 @@ export const VerticalChevrons = ({ onTap, upDisabled, downDisabled }: VerticalCh
       >
         <image
           className='Chevron'
-          src={ChevronUp}
+          src={chevron}
           style={{ opacity: downDisabled ? 0.3 : 1, transform: 'rotate(180deg)' }}
         />
       </view>

@@ -30,6 +30,7 @@ export type MainProps = {
 } | null;
 
 export type VerticalChevronsProps = {
+  dark?: boolean,
   onTap: (isDown: boolean) => void,
   upDisabled: boolean,
   downDisabled: boolean
