@@ -4,7 +4,7 @@ import Delete from '../../assets/delete.png';
 import type { HabitCardProps } from '../../types/index.jsx';
 import VerticalChevrons from '../../components/verticalChevrons.jsx';
 
-export const HabitCard = ({ habit, index, totalHabits, switchHabits }: HabitCardProps) => {
+export const HabitCard = ({ habit, index, totalHabits, switchHabits, deleteHabit }: HabitCardProps) => {
   return (
     <view className="HabitCard">
       <view className="LeftSide">
@@ -30,7 +30,7 @@ export const HabitCard = ({ habit, index, totalHabits, switchHabits }: HabitCard
             src={Edit}
           />
         </view>
-        <view className="ButtonHolder">
+        <view className="ButtonHolder" bindtap={() => deleteHabit(index)}>
           <image
             className='Delete'
             src={Delete}

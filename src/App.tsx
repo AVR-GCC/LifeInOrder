@@ -7,7 +7,7 @@ import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
 import { getUserList, setDayValueServer } from './server/index.jsx';
-import type { GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from './types/index.jsx';
+import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
@@ -79,6 +79,14 @@ export const App = () => {
     return valueObj;
   }
 
+  const deleteHabit: DeleteHabit = (index) => {
+    if (data === null) return null;
+    const { habits } = data;
+    const newHabits = [...habits];
+    newHabits.splice(index, 1);
+    setData({ ...data, habits: newHabits });
+  }
+
   const switchHabits: SwitchHabits = (isDown, index) => {
     if (data === null) return null;
     const { habits } = data;
@@ -105,7 +113,13 @@ export const App = () => {
                 <Day getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
               } />
               <Route path="/day/:date/habits" element={
-                <Habits switchHabits={switchHabits} getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
+                <Habits
+                  deleteHabit={deleteHabit}
+                  switchHabits={switchHabits}
+                  getDayHabitValue={getDayHabitValue}
+                  setDayHabitValue={setDayHabitValue}
+                  data={data}
+                />
               } />
             </Routes>
           </MemoryRouter>

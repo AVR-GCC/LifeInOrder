@@ -1,16 +1,16 @@
 import { useNavigate, useParams } from 'react-router';
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
-import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
+import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from '../../types/index.jsx';
 import HabitCard from './habitCard.jsx';
 
 export const Habits = (props: {
-  data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue, switchHabits: (isDown: boolean, index: number) => void
+  data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue, switchHabits: SwitchHabits, deleteHabit: DeleteHabit
 }) => {
   const { date } = useParams();
   if (props.data === null || date === undefined) return <text>Loading...</text>;
   const dateIndex = parseInt(date, 10);
-  const { data: { habits }, switchHabits } = props;
+  const { data: { habits }, switchHabits, deleteHabit } = props;
   const nav = useNavigate();
 
   return (
@@ -34,6 +34,7 @@ export const Habits = (props: {
               index={index}
               totalHabits={habits.length}
               switchHabits={switchHabits}
+              deleteHabit={deleteHabit}
             />;
           })}
           <view className='ClearBuffer' />
