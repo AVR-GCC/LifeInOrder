@@ -4,11 +4,13 @@ import LeftArrow from '../../assets/arrow-left.png';
 import type { GetDayHabitValue, MainProps, SetDayValue } from '../../types/index.jsx';
 import HabitCard from './habitCard.jsx';
 
-export const Habits = (props: { data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue }) => {
+export const Habits = (props: {
+  data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue, switchHabits: (isDown: boolean, index: number) => void
+}) => {
   const { date } = useParams();
   if (props.data === null || date === undefined) return <text>Loading...</text>;
   const dateIndex = parseInt(date, 10);
-  const { data: { habits } } = props;
+  const { data: { habits }, switchHabits } = props;
   const nav = useNavigate();
 
   return (
@@ -27,7 +29,12 @@ export const Habits = (props: { data: MainProps, getDayHabitValue: GetDayHabitVa
         </view>
         <scroll-view className='DayContainer'>
           {habits.map((h, index) => {
-            return <HabitCard habit={h} index={index} totalHabits={habits.length} />;
+            return <HabitCard
+              habit={h}
+              index={index}
+              totalHabits={habits.length}
+              switchHabits={switchHabits}
+            />;
           })}
           <view className='ClearBuffer' />
         </scroll-view>

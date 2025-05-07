@@ -39,7 +39,8 @@ export type VerticalChevronsProps = {
 export type HabitCardProps = {
   habit: Habit,
   index: number,
-  totalHabits: number
+  totalHabits: number,
+  switchHabits: SwitchHabits
 };
 
 export type HabitButtonProps = {
@@ -48,6 +49,7 @@ export type HabitButtonProps = {
   onTap: () => void
 };
 
+export type SwitchHabits = (isDown: boolean, index: number) => void;
 export type SetDayValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
 export type SetDayValueServer = (date: string, habitId: string, valueId: number) => void;
 

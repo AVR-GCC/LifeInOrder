@@ -4,7 +4,7 @@ import Delete from '../../assets/delete.png';
 import type { HabitCardProps } from '../../types/index.jsx';
 import VerticalChevrons from '../../components/verticalChevrons.jsx';
 
-export const HabitCard = ({ habit, index, totalHabits }: HabitCardProps) => {
+export const HabitCard = ({ habit, index, totalHabits, switchHabits }: HabitCardProps) => {
   return (
     <view className="HabitCard">
       <view className="LeftSide">
@@ -19,7 +19,7 @@ export const HabitCard = ({ habit, index, totalHabits }: HabitCardProps) => {
         <view className="ButtonHolder" style={{ paddingBottom: '6px', paddingRight: '12px' }}>
           <VerticalChevrons
             dark={true}
-            onTap={(isDown) => console.log('Moving habit to the down?', isDown) }
+            onTap={(isDown) => switchHabits(isDown, index)}
             upDisabled={index === 0}
             downDisabled={index === totalHabits - 1}
           />
