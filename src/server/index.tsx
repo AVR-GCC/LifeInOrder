@@ -29,7 +29,7 @@ export const setDayValueServer: SetDayValueServer = (() => {
       headers: { 'Content-Type': 'application/json' },
       body
     };
-    return fetch('http://10.0.0.8:8080/day_values', config);
+    return fetch(`${baseUrl}/day_values`, config);
   }
   const debounced: SetDayValueServer = (date, habitId, valueId) => {
     const key = `${date}-${habitId}`;
@@ -38,3 +38,11 @@ export const setDayValueServer: SetDayValueServer = (() => {
   };
   return debounced;
 })();
+
+export const deleteHabitServer = async (id: string) => {
+    const route = `${baseUrl}/user_habits/${parseInt(id, 10)}`;
+    const config = { method: 'DELETE' };
+    await fetch(route, config);
+    return null;
+}
+

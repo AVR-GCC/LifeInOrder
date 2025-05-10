@@ -6,7 +6,7 @@ import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
-import { getUserList, setDayValueServer } from './server/index.jsx';
+import { deleteHabitServer, getUserList, setDayValueServer } from './server/index.jsx';
 import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
@@ -83,6 +83,7 @@ export const App = () => {
     if (data === null) return null;
     const { habits } = data;
     const newHabits = [...habits];
+    deleteHabitServer(newHabits[index].habit.id);
     newHabits.splice(index, 1);
     setData({ ...data, habits: newHabits });
   }
