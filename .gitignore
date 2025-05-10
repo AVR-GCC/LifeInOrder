@@ -45,3 +45,6 @@ Thumbs.db
 .vercel/
 .netlify/
 output/
+
+# Custom
+src/assets/*.svg
