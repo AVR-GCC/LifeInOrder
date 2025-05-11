@@ -1,0 +1,58 @@
+.HabitCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--theme-color-three);
+  width: 80%;
+  height: 80px;
+  border: 1px solid var(--theme-color-four);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px 0px;
+}
+
+.LeftSide {
+  flex: 1;
+}
+
+.HabitName {
+  flex: 1;
+  margin: 5px;
+  color: #222222;
+  font-weight: 500;
+}
+
+.RightSide {
+  flex: 1;
+  display: flex;
+}
+
+.ValueColors {
+  display: flex;
+}
+
+.ValueColor {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin: 3px;
+}
+
+.ButtonHolder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.Edit {
+  height: 16px;
+  width: 16px;
+  margin-left: 15px;
+}
+
+.Delete {
+  height: 22px;
+  width: 22px;
+  margin-left: 15px;
+}

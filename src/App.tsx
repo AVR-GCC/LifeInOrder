@@ -6,6 +6,7 @@ import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
+import Values from './screens/values/index.jsx';
 import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer } from './server/index.jsx';
 import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues } from './types/index.jsx';
 
@@ -158,6 +159,13 @@ export const App = () => {
                   switchHabits={switchHabits}
                   getDayHabitValue={getDayHabitValue}
                   setDayHabitValue={setDayHabitValue}
+                  data={data}
+                />
+              } />
+              <Route path="/day/:date/habits/:habit" element={
+                <Values
+                  deleteValue={deleteValue}
+                  switchValues={switchValues}
                   data={data}
                 />
               } />

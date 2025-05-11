@@ -59,6 +59,21 @@ export type HabitButtonProps = {
   onTap: () => void
 };
 
+export type ValuesProps = {
+  data: MainProps,
+  switchValues: SwitchValues,
+  deleteValue: DeleteValue
+}
+
+export type ValueCardProps = {
+  habit: Habit,
+  habitIndex: number,
+  value: Value,
+  valueIndex: number,
+  switchValues: SwitchValues,
+  deleteValue: DeleteValue
+};
+
 export type SwitchValues = (isDown: boolean, habitIndex: number, valueIndex: number) => void;
 export type DeleteValue = (habitIndex: number, valueIndex: number) => void;
 export type SwitchHabits = (isDown: boolean, index: number) => void;
