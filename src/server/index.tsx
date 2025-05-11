@@ -14,6 +14,14 @@ export const getUserList = async () => {
     return null;
 }
 
+const debounce = (func: (args: any) => any) => {
+  let deb: ReturnType<typeof setTimeout> | null = null;
+  return (args: any) => {
+    if (deb) clearTimeout(deb);
+    deb = setTimeout(() => func(args), 1000);
+  }
+}
+
 export const setDayValueServer: SetDayValueServer = (() => {
   const debounces: { [key: string]: ReturnType<typeof setTimeout> } = {};
   const func: SetDayValueServer = async (date, habitId, valueId) => {
@@ -46,3 +54,18 @@ export const deleteHabitServer = async (id: string) => {
     return null;
 }
 
+export const reorderHabitsServerUndebounced = async (ids: string[]) => {
+    const body = JSON.stringify({
+      ordered_user_habit_ids: ids
+    });
+    const config = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    };
+    const route = `${baseUrl}/user_habits/reorder`;
+    const res = await fetch(route, config);
+    return res.ok;
+}
+
+export const reorderHabitsServer = debounce(reorderHabitsServerUndebounced);

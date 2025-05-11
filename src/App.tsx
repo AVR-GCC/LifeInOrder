@@ -6,7 +6,7 @@ import './App.css';
 import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
-import { deleteHabitServer, getUserList, setDayValueServer } from './server/index.jsx';
+import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer } from './server/index.jsx';
 import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
@@ -97,9 +97,14 @@ export const App = () => {
     const thisSequence = thisHabit.habit.sequence;
     const otherSequence = otherHabit.habit.sequence;
     const newHabits = [...habits];
+    const ids = new Array(newHabits.length);
     newHabits[index] = { ...otherHabit, habit: { ...otherHabit.habit, sequence: thisSequence } };
     newHabits[otherIndex] = { ...thisHabit, habit: { ...thisHabit.habit, sequence: otherSequence } };
+    for (let i = 0; i < ids.length; i++) {
+      ids[i] = newHabits[i].habit.id;
+    }
     setData({ ...data, habits: newHabits });
+    reorderHabitsServer(ids);
   }
 
   return (
@@ -111,7 +116,11 @@ export const App = () => {
             <Routes>
               <Route path="/" element={<Main getDayHabitValue={getDayHabitValue} data={data} />} />
               <Route path="/day/:date" element={
-                <Day getDayHabitValue={getDayHabitValue} setDayHabitValue={setDayHabitValue} data={data} />
+                <Day
+                  getDayHabitValue={getDayHabitValue}
+                  setDayHabitValue={setDayHabitValue}
+                  data={data}
+                />
               } />
               <Route path="/day/:date/habits" element={
                 <Habits
