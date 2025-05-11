@@ -33,6 +33,7 @@ export const Habits = (props: HabitsProps) => {
               totalHabits={habits.length}
               switchHabits={switchHabits}
               deleteHabit={deleteHabit}
+              editHabit={() => nav(`/day/${dateIndex}/habits/${index}`)}
             />;
           })}
           <view className='ClearBuffer' />

@@ -50,6 +50,7 @@ export type HabitCardProps = {
   totalHabits: number,
   switchHabits: SwitchHabits,
   deleteHabit: DeleteHabit
+  editHabit: EditHabit
 };
 
 export type HabitButtonProps = {
@@ -60,6 +61,7 @@ export type HabitButtonProps = {
 
 export type SwitchHabits = (isDown: boolean, index: number) => void;
 export type DeleteHabit = (index: number) => void;
+export type EditHabit = () => void;
 export type SetDayValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
 export type SetDayValueServer = (date: string, habitId: string, valueId: number) => void;
 
