@@ -1,12 +1,10 @@
 import { useNavigate, useParams } from 'react-router';
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
-import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from '../../types/index.jsx';
+import type { HabitsProps } from '../../types/index.jsx';
 import HabitCard from './habitCard.jsx';
 
-export const Habits = (props: {
-  data: MainProps, getDayHabitValue: GetDayHabitValue,  setDayHabitValue: SetDayValue, switchHabits: SwitchHabits, deleteHabit: DeleteHabit
-}) => {
+export const Habits = (props: HabitsProps) => {
   const { date } = useParams();
   if (props.data === null || date === undefined) return <text>Loading...</text>;
   const dateIndex = parseInt(date, 10);

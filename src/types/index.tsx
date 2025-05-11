@@ -36,6 +36,14 @@ export type VerticalChevronsProps = {
   downDisabled: boolean
 };
 
+export type HabitsProps = {
+  data: MainProps,
+  getDayHabitValue: GetDayHabitValue, 
+  setDayHabitValue: SetDayValue,
+  switchHabits: SwitchHabits,
+  deleteHabit: DeleteHabit
+}
+
 export type HabitCardProps = {
   habit: Habit,
   index: number,
