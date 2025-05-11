@@ -8,7 +8,7 @@ import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
 import Values from './screens/values/index.jsx';
 import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer } from './server/index.jsx';
-import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues } from './types/index.jsx';
+import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues, UpdateValue } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
@@ -138,6 +138,18 @@ export const App = () => {
     setData({ ...data, habits: newHabits });
   }
 
+  const updateValue: UpdateValue = (habitIndex, valueIndex, newValueValues) => {
+    if (data === null) return null;
+    const { habits } = data;
+    const thisValue = habits[habitIndex].values[valueIndex];
+    const newValue = { ...thisValue, ...newValueValues };
+    const newHabits = [...habits];
+    const newValues = [...habits[habitIndex].values];
+    newValues[valueIndex] = newValue;
+    newHabits[habitIndex].values = newValues;
+    setData({ ...data, habits: newHabits });
+  }
+
   return (
     <view>
       <view className='Background' />
@@ -166,6 +178,7 @@ export const App = () => {
                 <Values
                   deleteValue={deleteValue}
                   switchValues={switchValues}
+                  updateValue={updateValue}
                   data={data}
                 />
               } />

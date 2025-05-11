@@ -1,3 +1,4 @@
+import { useState } from '@lynx-js/react';
 import { useNavigate, useParams } from 'react-router';
 import '../../styles/Day.css';
 import LeftArrow from '../../assets/arrow-left.png';
@@ -9,8 +10,9 @@ export const Values = (props: ValuesProps) => {
   if (props.data === null || date === undefined || habit === undefined) return <text>Loading...</text>;
   const dateIndex = parseInt(date, 10);
   const habitIndex = parseInt(habit, 10);
-  const { data: { habits }, switchValues, deleteValue } = props;
+  const { data: { habits }, switchValues, deleteValue, updateValue } = props;
   const nav = useNavigate();
+  const [openPallete, setOpenPallete] = useState<number | null>(null);
 
   return (
     <view>
@@ -35,6 +37,11 @@ export const Values = (props: ValuesProps) => {
               valueIndex={index}
               switchValues={switchValues}
               deleteValue={deleteValue}
+              updateValue={updateValue}
+              palleteOpen={openPallete === v.id}
+              openPallete={() => {
+                setOpenPallete(openPallete === v.id ? null : v.id);
+              }}
             />;
           })}
           <view className='ClearBuffer' />

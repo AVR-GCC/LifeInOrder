@@ -62,7 +62,8 @@ export type HabitButtonProps = {
 export type ValuesProps = {
   data: MainProps,
   switchValues: SwitchValues,
-  deleteValue: DeleteValue
+  deleteValue: DeleteValue,
+  updateValue: UpdateValue
 }
 
 export type ValueCardProps = {
@@ -71,11 +72,15 @@ export type ValueCardProps = {
   value: Value,
   valueIndex: number,
   switchValues: SwitchValues,
-  deleteValue: DeleteValue
+  deleteValue: DeleteValue,
+  updateValue: UpdateValue,
+  palleteOpen: boolean,
+  openPallete: () => void
 };
 
 export type SwitchValues = (isDown: boolean, habitIndex: number, valueIndex: number) => void;
 export type DeleteValue = (habitIndex: number, valueIndex: number) => void;
+export type UpdateValue = (habitIndex: number, valueIndex: number, newValue: Partial<Value>) => void;
 export type SwitchHabits = (isDown: boolean, index: number) => void;
 export type DeleteHabit = (index: number) => void;
 export type EditHabit = () => void;

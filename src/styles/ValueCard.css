@@ -1,14 +1,30 @@
-.HabitCard {
+.ValueCard {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   background-color: var(--theme-color-three);
   width: 80%;
-  height: 80px;
   border: 1px solid var(--theme-color-four);
   border-radius: 10px;
   padding: 20px;
+  padding-top: 0;
   margin: 15px 0px;
+}
+
+.ValueCardMain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+}
+
+.ColorPallete {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--theme-color-two);
+  border-radius: 5px;
 }
 
 .LeftSide {
@@ -25,24 +41,30 @@
 .RightSide {
   flex: 1;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .ValueColors {
   display: flex;
 }
 
-.ValueColor {
-  height: 20px;
-  width: 20px;
+.ValueColorCircle {
+  height: 30px;
+  width: 30px;
   border-radius: 50%;
-  margin: 3px;
+  margin: 10px;
+}
+
+.ChevronSection {
+  margin-right: 7vw;
 }
 
 .ButtonHolder {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1;
+  flex: 2;
 }
 
 .Edit {
