@@ -7,7 +7,7 @@ import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
 import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer } from './server/index.jsx';
-import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits } from './types/index.jsx';
+import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues } from './types/index.jsx';
 
 export const UNFILLED_COLOR = '#555555';
 const SPARE_DATES = 50;
@@ -105,6 +105,36 @@ export const App = () => {
     }
     setData({ ...data, habits: newHabits });
     reorderHabitsServer(ids);
+  }
+
+  const deleteValue: DeleteValue = (habitIndex, valueIndex) => {
+    if (data === null) return null;
+    const { habits } = data;
+    const newHabits = [...habits];
+    const newValues = [...newHabits[habitIndex].values];
+    newValues.splice(valueIndex, 1);
+    newHabits[habitIndex].values = newValues;
+    setData({ ...data, habits: newHabits });
+  }
+
+  const switchValues: SwitchValues = (isDown, habitIndex, valueIndex) => {
+    if (data === null) return null;
+    const { habits } = data;
+    const otherIndex = valueIndex + (isDown ? 1 : -1);
+    const thisValue = habits[habitIndex].values[valueIndex];
+    const otherValue = habits[habitIndex].values[otherIndex];
+    const thisSequence = thisValue.sequence;
+    const otherSequence = otherValue.sequence;
+    const newHabits = [...habits];
+    const newValues = [...habits[habitIndex].values];
+    const ids = new Array(newValues.length);
+    newValues[valueIndex] = { ...otherValue, sequence: thisSequence };
+    newValues[otherIndex] = { ...thisValue, sequence: otherSequence };
+    for (let i = 0; i < ids.length; i++) {
+      ids[i] = newValues[i].id;
+    }
+    newHabits[habitIndex].values = newValues;
+    setData({ ...data, habits: newHabits });
   }
 
   return (
