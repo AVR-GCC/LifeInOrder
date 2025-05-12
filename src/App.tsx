@@ -1,6 +1,5 @@
 import { useEffect, useState } from '@lynx-js/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import moment from 'moment';
 
 import './App.css';
 import Main from './screens/main.jsx';
@@ -9,10 +8,10 @@ import Habits from './screens/habits/index.jsx';
 import Values from './screens/values/index.jsx';
 import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer, reorderValuesServer } from './server/index.jsx';
 import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues, UpdateValue } from './types/index.jsx';
+import { deleteHabitReducer, loadDataReducer, setDayHabitValueReducer, switchHabitsReducer, switchValuesReducer, updateValueReducer } from './state/reducers.jsx';
+import { getDayHabitValueSelector } from './state/selectors.jsx';
 
 export const UNFILLED_COLOR = '#555555';
-const SPARE_DATES = 50;
-const dateFormat = 'YYYY-MM-DD';
 
 export const App = () => {
   const [data, setData] = useState<MainProps>(null);
@@ -21,32 +20,7 @@ export const App = () => {
   const loadData = async () => {
     const data = await getUserList();
     if (data) {
-      const { dates, habits } = data;
-      const datesEmpty = !dates.length;
-      let datesIndex = 0;
-      const datesFilled = [];
-      const incrementalDate = datesEmpty ? moment() : moment(dates[0].date);
-      let nextDate = incrementalDate.format(dateFormat);
-      while (datesIndex < dates.length) {
-        const currentIncremental = incrementalDate.format(dateFormat);
-        if (currentIncremental === nextDate) {
-          datesFilled.push(dates[datesIndex]);
-          datesIndex++;
-          if (datesIndex === dates.length) break;
-          nextDate = dates[datesIndex].date;
-        } else {
-          datesFilled.push({ date: currentIncremental, values: {} });
-        }
-        incrementalDate.add(1, 'd');
-      }
-      const currentDate = datesEmpty ? moment() : moment(dates[dates.length - 1].date).add(1, 'd');
-      const newDates = new Array(SPARE_DATES);
-      for (let i = 0; i < SPARE_DATES; i++) {
-        newDates[i] = { date: currentDate.format(dateFormat), values: {} };
-        currentDate.add(1, 'd');
-      }
-
-      setData({ dates: [...datesFilled, ...newDates], habits });
+      setData(loadDataReducer(data)());
     }
   }
 
@@ -57,27 +31,13 @@ export const App = () => {
   const setDayHabitValue: SetDayValue = (dateIndex, habitIndex, valueId) => {
     if (data === null) return;
     const { dates, habits } = data;
-    const newDates = [...dates];
-    const habitObj = habits[habitIndex];
-    if (!newDates[dateIndex]) {
-      for (let i = newDates.length; i <= dateIndex; i++) {
-        newDates.push({ date: moment(newDates[i - 1].date).add(1, 'd').format('YYYY-MM-DD'), values: {} });
-      }
-    }
-    newDates[dateIndex].values[habitObj.habit.id] = valueId;
-    setDayValueServer(newDates[dateIndex].date, habitObj.habit.id, valueId)
-    setData({ ...data, dates: newDates });
+    setDayValueServer(dates[dateIndex].date, habits[habitIndex].habit.id, valueId)
+    setData(setDayHabitValueReducer(data)(dateIndex, habitIndex, valueId));
   }
 
   const getDayHabitValue: GetDayHabitValue = (dateIndex, habitIndex) => {
     if (data === null) return null;
-    const { dates, habits } = data;
-    const day = dates[dateIndex];
-    const habitObj = habits[habitIndex];
-    const dayValue = day.values[habitObj.habit.id];
-    const valueIndex = habitObj.values_hashmap[dayValue];
-    const valueObj = habitObj.values[valueIndex];
-    return valueObj;
+    return getDayHabitValueSelector(data)(dateIndex, habitIndex);
   }
 
   const deleteHabit: DeleteHabit = (index) => {
@@ -85,26 +45,17 @@ export const App = () => {
     const { habits } = data;
     const newHabits = [...habits];
     deleteHabitServer(newHabits[index].habit.id);
-    newHabits.splice(index, 1);
-    setData({ ...data, habits: newHabits });
+    setData(deleteHabitReducer(data)(index));
   }
 
   const switchHabits: SwitchHabits = (isDown, index) => {
     if (data === null) return null;
     const { habits } = data;
     const otherIndex = index + (isDown ? 1 : -1);
-    const thisHabit = habits[index];
-    const otherHabit = habits[otherIndex];
-    const thisSequence = thisHabit.habit.sequence;
-    const otherSequence = otherHabit.habit.sequence;
-    const newHabits = [...habits];
-    const ids = new Array(newHabits.length);
-    newHabits[index] = { ...otherHabit, habit: { ...otherHabit.habit, sequence: thisSequence } };
-    newHabits[otherIndex] = { ...thisHabit, habit: { ...thisHabit.habit, sequence: otherSequence } };
-    for (let i = 0; i < ids.length; i++) {
-      ids[i] = newHabits[i].habit.id;
-    }
-    setData({ ...data, habits: newHabits });
+    const ids = habits.map(h => h.habit.id);
+    ids[index] = habits[otherIndex].habit.id;
+    ids[otherIndex] = habits[index].habit.id;
+    setData(switchHabitsReducer(data)(isDown, index));
     reorderHabitsServer(ids);
   }
 
@@ -122,35 +73,17 @@ export const App = () => {
     if (data === null) return null;
     const { habits } = data;
     const otherIndex = valueIndex + (isDown ? 1 : -1);
-    const thisValue = habits[habitIndex].values[valueIndex];
-    const otherValue = habits[habitIndex].values[otherIndex];
-    const thisSequence = thisValue.sequence;
-    const otherSequence = otherValue.sequence;
-    const newHabits = [...habits];
-    const newValues = [...habits[habitIndex].values];
-    newHabits[habitIndex].values_hashmap[thisValue.id] = otherIndex;
-    newHabits[habitIndex].values_hashmap[otherValue.id] = valueIndex;
-    const ids = new Array(newValues.length);
-    newValues[valueIndex] = { ...otherValue, sequence: thisSequence };
-    newValues[otherIndex] = { ...thisValue, sequence: otherSequence };
-    for (let i = 0; i < ids.length; i++) {
-      ids[i] = newValues[i].id;
-    }
-    newHabits[habitIndex].values = newValues;
-    setData({ ...data, habits: newHabits });
+    const values = habits[habitIndex].values;
+    const ids = values.map(v => v.id);
+    ids[valueIndex] = values[otherIndex].id;
+    ids[otherIndex] = values[valueIndex].id;
+    setData(switchValuesReducer(data)(isDown, habitIndex, valueIndex));
     reorderValuesServer(ids);
   }
 
   const updateValue: UpdateValue = (habitIndex, valueIndex, newValueValues) => {
-    if (data === null) return null;
-    const { habits } = data;
-    const thisValue = habits[habitIndex].values[valueIndex];
-    const newValue = { ...thisValue, ...newValueValues };
-    const newHabits = [...habits];
-    const newValues = [...habits[habitIndex].values];
-    newValues[valueIndex] = newValue;
-    newHabits[habitIndex].values = newValues;
-    setData({ ...data, habits: newHabits });
+    if (data === null) return;
+    setData(updateValueReducer(data)(habitIndex, valueIndex, newValueValues));
   }
 
   return (

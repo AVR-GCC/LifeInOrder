@@ -78,13 +78,30 @@ export type ValueCardProps = {
   openPallete: () => void
 };
 
+export type SwitchValuesReducer = (prevState: MainProps) => (isDown: boolean, habitIndex: number, valueIndex: number) => MainProps;
 export type SwitchValues = (isDown: boolean, habitIndex: number, valueIndex: number) => void;
+
+export type DeleteValueReducer = (prevState: MainProps) => (habitIndex: number, valueIndex: number) => MainProps;
 export type DeleteValue = (habitIndex: number, valueIndex: number) => void;
+
+export type UpdateValueReducer = (prevState: MainProps) => (habitIndex: number, valueIndex: number, newValue: Partial<Value>) => MainProps;
 export type UpdateValue = (habitIndex: number, valueIndex: number, newValue: Partial<Value>) => void;
+
+export type SwitchHabitsReducer = (prevState: MainProps) => (isDown: boolean, index: number) => MainProps;
 export type SwitchHabits = (isDown: boolean, index: number) => void;
+
+export type DeleteHabitReducer = (prevState: MainProps) => (index: number) => MainProps;
 export type DeleteHabit = (index: number) => void;
+
+export type EditHabitReducer = (prevState: MainProps) => () => MainProps;
 export type EditHabit = () => void;
+
+export type SetDayValueReducer = (prevState: MainProps) => (dayIndex: number, habitIndex: number, valueId: number) => MainProps;
 export type SetDayValue = (dayIndex: number, habitIndex: number, valueId: number) => void;
+
+
+
 export type SetDayValueServer = (date: string, habitId: string, valueId: number) => void;
 
+export type GetDayHabitValueSelector = (prevState: MainProps) => (dayIndex: number, habitIndex: number) => Value | null;
 export type GetDayHabitValue = (dayIndex: number, habitIndex: number) => Value | null;
