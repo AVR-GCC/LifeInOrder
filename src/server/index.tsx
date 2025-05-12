@@ -56,7 +56,7 @@ export const deleteHabitServer = async (id: string) => {
 
 export const reorderHabitsServerUndebounced = async (ids: string[]) => {
     const body = JSON.stringify({
-      ordered_user_habit_ids: ids
+      ordered_ids: ids
     });
     const config = {
       method: 'POST',
