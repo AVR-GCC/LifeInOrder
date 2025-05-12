@@ -72,4 +72,11 @@ export const reorderHabitsServerUndebounced = async (ids: string[]) => {
     return reorderGeneralServerUndebounced(route, ids); 
 }
 
+export const reorderValuesServerUndebounced = async (ids: string[]) => {
+    const route = `${baseUrl}/habit_values/reorder`;
+    return reorderGeneralServerUndebounced(route, ids); 
+}
+
 export const reorderHabitsServer = debounce(reorderHabitsServerUndebounced);
+
+export const reorderValuesServer = debounce(reorderValuesServerUndebounced);
