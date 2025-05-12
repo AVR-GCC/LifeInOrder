@@ -128,6 +128,8 @@ export const App = () => {
     const otherSequence = otherValue.sequence;
     const newHabits = [...habits];
     const newValues = [...habits[habitIndex].values];
+    newHabits[habitIndex].values_hashmap[thisValue.id] = otherIndex;
+    newHabits[habitIndex].values_hashmap[otherValue.id] = valueIndex;
     const ids = new Array(newValues.length);
     newValues[valueIndex] = { ...otherValue, sequence: thisSequence };
     newValues[otherIndex] = { ...thisValue, sequence: otherSequence };
