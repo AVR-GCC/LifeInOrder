@@ -29,6 +29,7 @@
 
 .ValueColors {
   display: flex;
+  background-color: var(--theme-color-two);;
 }
 
 .ValueColor {

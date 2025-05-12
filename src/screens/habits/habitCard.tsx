@@ -9,11 +9,11 @@ export const HabitCard = ({ habit, index, totalHabits, switchHabits, deleteHabit
     <view className="HabitCard">
       <view className="LeftSide">
         <text className="HabitName">{habit.habit.name}</text>
-        <view className="ValueColors">
+        <scroll-view scroll-orientation="horizontal" className="ValueColors">
           {habit.values.map(value => (
             <view className="ValueColor" style={{ background: value.color }} />
           ))}
-        </view>
+        </scroll-view>
       </view>
       <view className="RightSide">
         <view className="ButtonHolder" style={{ paddingBottom: '6px', paddingRight: '12px' }}>
