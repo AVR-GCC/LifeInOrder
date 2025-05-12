@@ -54,7 +54,7 @@ export const deleteHabitServer = async (id: string) => {
     return null;
 }
 
-export const reorderHabitsServerUndebounced = async (ids: string[]) => {
+export const reorderGeneralServerUndebounced = async (route: string, ids: string[]) => {
     const body = JSON.stringify({
       ordered_ids: ids
     });
@@ -63,9 +63,13 @@ export const reorderHabitsServerUndebounced = async (ids: string[]) => {
       headers: { 'Content-Type': 'application/json' },
       body
     };
-    const route = `${baseUrl}/user_habits/reorder`;
     const res = await fetch(route, config);
     return res.ok;
+}
+
+export const reorderHabitsServerUndebounced = async (ids: string[]) => {
+    const route = `${baseUrl}/user_habits/reorder`;
+    return reorderGeneralServerUndebounced(route, ids); 
 }
 
 export const reorderHabitsServer = debounce(reorderHabitsServerUndebounced);
