@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { MainProps, SetDayValueServer } from '../types/index.jsx';
+import type { MainProps, SetDayValueServer, Value } from '../types/index.jsx';
 
 const baseUrl = 'http://10.0.0.8:8080';
 
@@ -50,8 +50,8 @@ export const setDayValueServer: SetDayValueServer = (() => {
 export const deleteHabitServer = async (id: string) => {
     const route = `${baseUrl}/user_habits/${parseInt(id, 10)}`;
     const config = { method: 'DELETE' };
-    await fetch(route, config);
-    return null;
+    const res = await fetch(route, config);
+    return res.ok;
 }
 
 export const reorderGeneralServerUndebounced = async (route: string, ids: string[]) => {
@@ -80,3 +80,15 @@ export const reorderValuesServerUndebounced = async (ids: string[]) => {
 export const reorderHabitsServer = debounce(reorderHabitsServerUndebounced);
 
 export const reorderValuesServer = debounce(reorderValuesServerUndebounced);
+
+export const updateValueServer = async (newValue: Value) => {
+    const route = `${baseUrl}/habit_values`;
+    const body = JSON.stringify(newValue);
+    const config = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    };
+    const res = await fetch(route, config);
+    return res.ok;
+}

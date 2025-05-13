@@ -6,7 +6,7 @@ import Main from './screens/main.jsx';
 import Day from './screens/day/index.jsx';
 import Habits from './screens/habits/index.jsx';
 import Values from './screens/values/index.jsx';
-import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer, reorderValuesServer } from './server/index.jsx';
+import { deleteHabitServer, getUserList, reorderHabitsServer, setDayValueServer, reorderValuesServer, updateValueServer } from './server/index.jsx';
 import type { DeleteHabit, GetDayHabitValue, MainProps, SetDayValue, SwitchHabits, DeleteValue, SwitchValues, UpdateValue } from './types/index.jsx';
 import { deleteHabitReducer, loadDataReducer, setDayHabitValueReducer, switchHabitsReducer, switchValuesReducer, updateValueReducer } from './state/reducers.jsx';
 import { getDayHabitValueSelector } from './state/selectors.jsx';
@@ -84,6 +84,10 @@ export const App = () => {
   const updateValue: UpdateValue = (habitIndex, valueIndex, newValueValues) => {
     if (data === null) return;
     setData(updateValueReducer(data)(habitIndex, valueIndex, newValueValues));
+    const { habits } = data;
+    const oldValue = habits[habitIndex].values[valueIndex];
+    const newValue = { ...oldValue, ...newValueValues };
+    updateValueServer(newValue);
   }
 
   return (
